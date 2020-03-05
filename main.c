@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: CC0-1.0
 
+#include "wrong_line_endings.h"
+
 #include <stdio.h> // puts, printf
 #include <string.h> // strcmp
 #include <stdlib.h> // exit
@@ -32,6 +34,7 @@ static void parse_args(const int argc, const char* const argv[])
                   verbose = true;
                   }
             }
+      print_args(argc, argv);
       if (verbose)
             puts("Verbose mode enabled!");
       }
