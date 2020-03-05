@@ -1,0 +1,5 @@
+# build directories
+build*
+
+# backup and autosave files
+*~
