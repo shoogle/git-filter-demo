@@ -1,0 +1,34 @@
+# Checkout attributes:
+#   eol=lf    Force files to have Unix (LF) line endings in working directory.
+#   eol=crlf  Force files to have DOS (CRLF) line endings in working directory.
+#
+# Checkin attributes:
+#   text        Convert CRLF to LF for internal storage by Git.
+#   text=auto   As above, but first check file is text and not binary. Existing
+#               CRLF stays as CRLF unless user runs `git add . --renormalize`.
+#
+# Ideally, all text files should be stored with LF endings internally, and
+# converted to CRLF on checkout where necessary. However, if some files have
+# already been stored as CRLF internally then they cannot be changed without
+# ruining the output of `git blame`.
+
+# Use "text=auto" when we are not sure whether files are text or binary:
+*       text=auto
+
+# Use "text" for all files that are definitely text:
+*.c     text
+*.h     text
+
+# Files that must have Unix line endings (LF) in working directory:
+*.sh    text    eol=lf
+
+# Files that must have DOS line endings (CRLF) in working directory:
+*.bat   text    eol=crlf
+
+# These are binary files so don't attempt to diff or convert line endings:
+*.jpg   binary
+*.png   binary
+
+# These text files were previously stored with CRLF endings so don't attempt
+# to convert them now, but diffing is OK:
+wrong_line_endings.h  -text
