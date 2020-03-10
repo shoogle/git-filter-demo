@@ -16,8 +16,8 @@
 *       text=auto
 
 # Use "text" for all files that are definitely text:
-*.c     text
-*.h     text
+*.c     text    filter=indent_cpp
+*.h     text    filter=indent_cpp
 
 # Files that must have Unix line endings (LF) in working directory:
 *.sh    text    eol=lf
