@@ -1,16 +1,18 @@
 /* SPDX-License-Identifier: CC0-1.0 */
 
 /*
- * Oh dear! Somebody accidentally committed this file into the repository with
- * CRLF line endings and now we can't fix it without ruining `git blame`. We
- * will forevermore see pointless ^M characters when we try to diff this file.
- * This could have been avoided if the repository had a .gitattributes file
- * that specified 'text', 'text=auto', 'eol=lf', or even 'eol=crlf' for this
- * format at the time that this file was originally committed.
+ * Oh dear! Somebody accidentally committed this file into the repository with CRLF line endings.
+ * We will forevermore see pointless ^M characters when we use `git diff` on this file!
  *
- * P.S. You can use this command to stop seeing ^M characters in `git diff`:
+ * This could have been avoided if the repository had a .gitattributes file that specified 'text',
+ * 'text=auto', 'eol=lf', or even 'eol=crlf' for this file back when it was originally committed.
+ *
+ * Since that wasn't the case, you can use this command to stop seeing ^M characters in `git diff`,
+ * but note that this makes it harder to spot real problems with line endings:
+ *
  *    $ git config core.whitespace cr-at-eol
- * However, that makes it harder to spot real problems with line endings.
+ *
+ * Alternatively, you could try to fix the line endings as discussed in fixed_line_endings.h.
  */
 
 #pragma once

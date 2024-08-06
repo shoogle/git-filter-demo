@@ -3,7 +3,7 @@
 /*
  * Oh dear! Somebody accidentally committed this file into the repository with CRLF line endings.
  *
- * Fortunately, Git has a feature that enables us to fix this without ruining `git blame`. Better
+ * Fortunately, Git has a feature that enabled us to fix this without ruining `git blame`. Better
  * yet, since March 2022, GitHub also supports this feature when viewing the blame online. See
  * https://github.blog/changelog/2022-03-24-ignore-commits-in-the-blame-view-beta/.
  *
@@ -22,8 +22,18 @@
  *    the SHA. If in doubt, wait for the first commit to be merged to a protected branch ("master",
  *    "main", etc.) before adding its SHA to .git-blame-ignore-revs in a second commit.
  *
- * Once the newline-resolving commit's SHA is mentioned in .git-blame-ignore-revs, GitHub will skip
+ * Now the newline-resolving commit's SHA is mentioned in .git-blame-ignore-revs, GitHub will skip
  * that commit when assigning blame and defer to the previous commit that altered each line.
+ *
+ * Use this command to skip the line ending commit when viewing the blame locally:
+ *
+ *    $  git blame --ignore-revs-file .git-blame-ignore-revs -- src/fixed_line_endings.h
+ *
+ * Or make it permanent with:
+ *
+ *    $  git config blame.ignoreRevsFile .git-blame-ignore-revs
+ *
+ * Now it will skip the commit even if you use `git blame` without the --ignore-revs-file option.
  */
 
 #pragma once
