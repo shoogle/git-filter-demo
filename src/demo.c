@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: CC0-1.0
 
+#include "fixed_line_endings.h"
 #include "wrong_line_endings.h"
 
 #include <stdio.h> // puts, printf
@@ -41,6 +42,8 @@ static void parse_args(const int argc, const char* const argv[])
 
 int main(int argc, char* argv[])
       {
+      print_hello();
       parse_args(argc, argv);
+      print_goodbye();
       return 0;
       }
