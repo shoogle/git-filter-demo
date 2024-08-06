@@ -1,46 +1,64 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: CC0-1.0
 
-# Wrapper script for Uncrustify - http://uncrustify.sourceforge.net/
-# Fixes a bug where Uncrustify fails to preserve CRLF line endings when the
-# newlines config option is set to 'auto' and input is from STDIN.
-# See https://github.com/uncrustify/uncrustify/issues/2686.
+# Wrapper script to modify the input and output of Uncrustify - http://uncrustify.sourceforge.net/
 
-IFS="" # don't strip leading or trailing spaces when reading lines
+# Provides workaround for a bug in Uncrustify versions prior to 0.71 (released May 2020) where CRLF
+# line endings were not preserved when reading from STDIN on Windows with newlines=auto in the
+# Uncrustify config file. This bug was fixed in https://github.com/uncrustify/uncrustify/pull/2700
+# so the workaround is no longer required, but the script is retained to demonstrate how you can
+# modify Uncrustify's input and output via pipes (i.e. without creating temporary files).
 
-read -r line # read first line from STDIN
+set -euo pipefail # exit on errors, error on unassigned variables, preserve errors in pipelines
+shopt -s lastpipe # preserve variables set in the final section of a pipeline
 
-if [[ "${line: -1}" == $'\r' ]]; then
-  # first line ends with CR (assume all lines do)
-  newline="\r\n" # CRLF - Dos
+IFS='' # don't strip leading or trailing spaces when reading lines
+
+read -r input_line # read first line from STDIN, excluding the \n (LF, linefeed) character
+
+if [[ "${input_line:(-1)}" == $'\r' ]]; then
+    # first line of input ends with CR (assume all lines do)
+    input_cr=$'\r' # CR at EOL (DOS-style CRLF)
 else
-  newline="\n" # LF - Unix
+    input_cr='' # No CR at EOL (Unix-style LF)
 fi
 
-{
-  # send first line to uncrustify
-  echo "${line}"
+output_cr="${input_cr}" # desired
 
-  # read remaining lines from STDIN and send to uncrustify
-  while read -r line; do
-    echo "${line}"
-  done
+{
+    printf '%s\n' "${input_line}" # pipe first line to uncrustify, including possible CR character
+
+    # read remaining lines from STDIN and pipe to uncrustify, including possible CR characters
+    while read -r input_line; do
+        printf '%s\n' "${input_line}"
+    done
 } |
-  uncrustify "$@" |
+    uncrustify "$@" | # call uncrustify with script arguments and connect to input and output pipes
 {
-  # read first line of Uncrustify's output
-  read -r line
+    read -r output_line # read first line of Uncrustify's output
 
-  if [[ "${line: -1}" == $'\r' ]]; then
-    # first line ends with CR already (assume all lines do)
-    newline="\n" # don't output extra CR characters
-  fi
+    if [[ "${output_line:(-1)}" == $'\r' ]]; then
+        # first line of output already ends with CR (assume all lines do)
+        output_cr='' # don't output extra CR character (avoid CRCRLF)
+    fi
 
-  # fix first line and send to STDOUT
-  printf "%s${newline}" "${line}"
+    printf '%s\n' "${output_line}${output_cr}" # send first line to STDOUT, with added CR if needed
 
-  # read and fix remaining lines and send to STDOUT
-  while read -r line; do
-    printf "%s${newline}" "${line}"
-  done
+    # read remaining lines and send to STDOUT, with added CR characters if needed
+    while read -r output_line; do
+        printf '%s\n' "${output_line}${output_cr}"
+    done
 }
+
+# Print success message to console. Do this last to avoid mangling Uncrustify's own messages.
+if [[ "${input_cr}" ]]; then
+    # Check the value of ${output_cr}. It may have been modified within the pipeline, hence we
+    # enabled "shopt -s lastpipe" in order to see the modified value here.
+    if [[ "${output_cr}" ]]; then
+        echo >&2 "$0: Restored CRLF line endings in Uncrustify output."
+    else
+        echo >&2 "$0: CRLF line endings were preserved by Uncrustify."
+    fi
+else
+    echo >&2 "$0: Input file did not contain CRLF line endings."
+fi
