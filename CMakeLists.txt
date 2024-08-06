@@ -14,4 +14,4 @@ indentation style during checkout and staging."
 
 set(PROJECT_HOMEPAGE_URL "https://github.com/shoogle/git-filter-demo")
 
-add_executable(main main.c)
+add_executable(demo src/demo.c)
