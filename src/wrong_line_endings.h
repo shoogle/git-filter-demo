@@ -12,6 +12,11 @@
  *    $ git config core.whitespace cr-at-eol
  * However, that makes it harder to spot real problems with line endings.
  */
+
+#pragma once
+
+#include <stdio.h> // puts, printf
+
 static void print_args(const int argc, const char* const argv[])
       {
       printf("%s:", argv[0]);
