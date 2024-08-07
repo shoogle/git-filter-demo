@@ -21,6 +21,13 @@ shopt -s lastpipe # preserve variables set in the final section of a pipeline
 
 IFS='' # don't strip leading or trailing spaces when reading lines
 
+if ! read -t0; then
+    # No data on STDIN. Assume a filename was passed as argument instead. The bug with CRLF line
+    # endings doesn't apply when reading from named files so we can just call Uncrustify directly.
+    exec uncrustify "$@"
+    exit 255 # unreachable due to exec
+fi
+
 read -r input_line # read first line from STDIN, excluding the \n (LF, linefeed) character
 
 if [[ "${input_line:(-1)}" == $'\r' ]]; then

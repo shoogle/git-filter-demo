@@ -120,6 +120,66 @@ some semantic changes (e.g. add another `puts()`, or change some words in a stri
 
 Notice that `git diff` ignores whitespace changes because they don't survive the filter.
 
+### Define diff filter
+
+If you defined a `smudge` command earlier, you may have noticed that `git diff` displays C code in
+the internal style rather than in your checked-out style.
+
+To remedy this, [`.gitattributes`] also declares a diff filter called `tidy_c` (look for
+`diff=tidy_c`). Let's define the `textconv` command for this filter. Git will run this command when
+you diff files with this attribute.
+
+```Bash
+# Set the diff filter to match the smudge filter (may not work with all smudge filters):
+git config diff.tidy_c.textconv "$(git config filter.tidy_c.smudge) <"
+
+# Alternatively, set the diff filter explicitly:
+git config diff.tidy_c.textconv "uncrustify -l C -c lint/uncrustify/kr.cfg -f"
+```
+
+Now diffs will use your preferred style. Note that this is purely a visual change. It doesn't
+affect what happens with `git add` or `git commit`.
+
+<details>
+<summary><b>Learn more about the <code>textconv</code> command</b></summary>
+
+Unlike the `smudge` and `clean` commands, the command defined for `textconv` doesn't receive data
+from `STDIN`. Instead, Git provides the path to a single file, which the `textconv` command must
+read, process somehow, and then write to `STDOUT`. This path is provided as an extra argument after
+all arguments in the command definition, and is also exposed to the command as the shell variable
+`$1`. Although the path is 'quoted' to preserve space characters, these quotes are stripped by the
+shell so they are not visible to your command.
+
+You can simulate this with:
+
+```Bash
+sh -c 'YOUR_COMMAND_DEFINITION '"'src/demo.c'" '' 'src/demo.c' | less
+sh -c "$(git config diff.tidy_c.textconv) 'src/demo.c'" '' 'src/demo.c' | less
+```
+
+Try substituting `echo >&2 "Diffing: <$1>"` as `YOUR_COMMAND_DEFINITION` and see what happens!
+
+When you perform a diff (e.g. `git diff src/demo.c`), Git runs the staged and unstaged versions of
+the file through your filter and compares them using the ordinary `git diff` algorithm.
+
+```Bash
+git show HEAD:src/demo.c >/tmp/staged
+diff -u --color=always <(sh -c 'YOUR_COMMAND_DEFINITION /tmp/staged' '' /tmp/staged) <(sh -c 'YOUR_COMMAND_DEFINITION src/demo.c' '' src/demo.c) | less -R
+diff -u --color=always <(sh -c "$(git config diff.tidy_c.textconv) /tmp/staged" '' /tmp/staged) <(sh -c "$(git config diff.tidy_c.textconv) src/demo.c" '' src/demo.c) | less -R
+```
+
+The `diff` filter is only used for the visual diff. When committing changes, Git calculates deltas
+based on the output of the `clean` filter. If no `clean` filter is defined then it uses the actual
+file contents.
+
+See also:
+
+- [Git Attributes: Generating diff text](https://git-scm.com/docs/gitattributes#_generating_diff_text)
+- [Git Attributes: Performing text diffs of binary files](https://git-scm.com/docs/gitattributes#_performing_text_diffs_of_binary_files)
+- [Customizing Git Attributes: Diffing binary files](https://git-scm.com/book/en/v2/Customizing-Git-Git-Attributes#_diffing_binary_files)
+
+</details>
+
 ### Optional: Define more filters!
 
 You could define auto-format rules for other types of files, such as Markdown `README.md` files or

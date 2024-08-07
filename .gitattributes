@@ -16,8 +16,8 @@
 *       text=auto
 
 # Use "text" for all files that are definitely text:
-*.c     text    filter=tidy_c
-*.h     text    filter=tidy_c
+*.c     text    filter=tidy_c   diff=tidy_c
+*.h     text    filter=tidy_c   diff=tidy_c
 
 # Files that must have Unix line endings (LF) in working directory:
 *.sh    text    eol=lf
