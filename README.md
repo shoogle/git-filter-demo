@@ -24,15 +24,15 @@ Or fork the project on GitHub and clone your fork.
 
 ### 2. Setup filter to autoformat C code
 
-A filter named `indent_cpp` is declared in `.gitattributes`. You need to
+A filter named `tidy_c` is declared in `.gitattributes`. You need to
 define the commands it should execute during checkout and checkin:
 
 ```
 # Checkout K&R style:
-git config filter.indent_cpp.smudge "lint/uncrustify/wrapper.sh -c lint/uncrustify/kr.cfg"
+git config filter.tidy_c.smudge "lint/uncrustify/wrapper.sh -c lint/uncrustify/kr.cfg"
 
 # Checkin MuseScore style:
-git config filter.indent_cpp.clean "lint/uncrustify/wrapper.sh -c lint/uncrustify/musescore.cfg"
+git config filter.tidy_c.clean "lint/uncrustify/wrapper.sh -c lint/uncrustify/musescore.cfg"
 ```
 
 You could checkout to a different style if you prefer, but you should always
