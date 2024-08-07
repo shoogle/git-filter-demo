@@ -9,6 +9,13 @@
 # so the workaround is no longer required, but the script is retained to demonstrate how you can
 # modify Uncrustify's input and output via pipes (i.e. without creating temporary files).
 
+((${BASH_VERSION%%.*} >= 4)) || { echo >&2 "$0: Error: Please upgrade Bash."; exit 1; }
+
+if ! which uncrustify &>/dev/null; then
+    echo >&2 "$0: Error: Please install Uncrustify in PATH. Version 0.73 is recommended."
+    exit 1
+fi
+
 set -euo pipefail # exit on errors, error on unassigned variables, preserve errors in pipelines
 shopt -s lastpipe # preserve variables set in the final section of a pipeline
 
