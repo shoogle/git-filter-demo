@@ -187,3 +187,21 @@ build scripts like `CMakeLists.txt`.
 
 Rules declared in `.gitattributes` will affect all developers, whereas rules declared in
 `.git/info/attributes` are personal to you.
+
+## Conclusion
+
+My personal view is it's definitely worth defining a `clean` filter for source projects. Doing so
+ensures the internal code style remains consistent, which makes for easy code review on GitHub. It
+also unlocks the possibility of developers defining `smudge` filters on their local machines,
+because you can't `smudge` code unless there's a consistent target to `clean` back to.
+
+I would define `smudge` and `diff` filters for binary files because it's difficult to inspect these
+files otherwise.
+
+I would _declare_ `smudge` and `diff` filters for text files, however I personally would not bother
+to define commands for them on my local machine. I prefer to work with content directly rather than
+with a _representation_ of the content. This means getting used to a different coding style in each
+project I contribute to, but at least this way the local files on my machine, as well as the output
+of `git diff` and `git show`, always match what you see online in the GitHub preview.
+
+_Peter._
