@@ -15,7 +15,8 @@
  * Alternatively, you could try to fix the line endings as discussed in fixed_line_endings.h.
  */
 
-#pragma once
+#ifndef WRONG_LINE_ENDINGS_H
+#define WRONG_LINE_ENDINGS_H
 
 #include <stdio.h> // puts, printf
 
@@ -26,3 +27,5 @@ static void print_args(const int argc, const char* const argv[])
             printf(" %s", argv[j]);
       puts("");
       }
+
+#endif // WRONG_LINE_ENDINGS_H

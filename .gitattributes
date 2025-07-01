@@ -31,4 +31,4 @@
 
 # These text files were previously stored with CRLF endings so don't attempt
 # to convert them now, but diffing is OK:
-src/wrong_line_endings.h    -text
+#src/wrong_line_endings.h    -text
