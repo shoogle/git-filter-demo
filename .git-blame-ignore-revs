@@ -1,2 +1,5 @@
 # Switch to LF line endings in fixed_line_endings.h
 c5c86000d97ead981763461213228937a538312d
+
+# Change line endings and include guards in wrong_line_endings.h
+670d0e00f186310ad940ec5692d885081a54ca9f
