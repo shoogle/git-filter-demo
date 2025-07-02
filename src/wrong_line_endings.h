@@ -22,7 +22,7 @@
 static void print_args(const int argc, const char* const argv[])
       {
       printf("%s:", argv[0]);
-      for (int i = 1; i < argc; ++i)
-            printf(" %s", argv[i]);
+      for (int j = 1; j < argc; ++j)
+            printf(" %s", argv[j]);
       puts("");
       }
